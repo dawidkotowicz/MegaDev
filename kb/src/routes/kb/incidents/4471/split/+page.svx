@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: dawidkotowicz
 status: open
 reviewed: 2026-10-29
-signature: dawidkotowicz
+signature: 'v1.eyJzdWIiOiI0NjAxIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMzMDAzMzcsImV4cCI6MTc5MzM4NjczN30.HtzaHi_J8FPv-H8610JNt2hlU5YQ0T4eIWCVkaqMOFM'
 ---
 
 <script>
@@ -29,6 +29,18 @@ Not one issue. Three problems, three tickets. Fixing the parser closes only the 
 ## What #4471 holds
 
 <ProblemTable ticket={4471} {tickets} />
+
+## Where they stand
+
+Engineering closed #4471 on 5 October:
+
+| problem | ticket | state |
+|---|---|---|
+| `parser` | [#1](https://github.com/dawidkotowicz/MegaDev/issues/1) | closed, fixed: `fix(dates): parse dd/mm for eu locales` |
+| `hint` | [#2](https://github.com/dawidkotowicz/MegaDev/issues/2) | closed, won't fix: the booking-v3 form is retired |
+| `move` | [#3](https://github.com/dawidkotowicz/MegaDev/issues/3) | **open**: neither change touches it |
+
+Closing #4471 did not close `move`. A one-day shift still reaches invites and reminders.
 
 ## The three problems
 

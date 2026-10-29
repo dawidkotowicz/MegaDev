@@ -1,0 +1,75 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: dawidkotowicz
+status: open
+reviewed: 2026-10-29
+signature: dawidkotowicz
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/dawidkotowicz/MegaDev/issues';
+  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, move: `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) says one bug: the parser reads dates month first. The reports merged
+into it say three. They were merged because their subject lines looked alike
+([decision 0001](/kb/decisions/0001-dedupe-by-subject)); nobody had to read the bodies, so nobody
+did. One fix will not close them all.
+
+<Callout kind="warn">
+Not one issue. Three problems, three tickets. Fixing the parser closes only the first.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} {tickets} />
+
+## The three problems
+
+**`parser` — the shared parser reads every date month first.** Every tenant on file writes the
+day first. A booking for 7 April (07/04) goes out as 4 July. This is what #4471 describes, and
+the fix queued for it.
+
+**`hint` — booking-v3 tells people to type the month first.** The booking-v3 form prints
+`MM/DD/YYYY` under its date field and then reads what people type the tenant's way, day first.
+It only happens on the form channel of tenants who run booking-v3. These reports look the same
+as `parser` from the outside: day and month swapped. Fixing the parser does not touch the form,
+so they keep coming after #4471 closes.
+
+**`move` — the date moves by exactly one day.** No day and month swap at all: "Tuesday 12 May"
+shown as "Monday 11 May", a meeting held on Tuesday in Lisbon and Monday in Toronto, every June
+booking one day off. The desk already read these as a one-day move (`desk-notes.json`) but left
+them filed under `parser`, as a footnote. A month-first parser cannot move a date by one day;
+this looks like a time zone or daylight-saving shift. It needs its own ticket and its own owner.
+
+## Why intake tags do not help
+
+Intake tags a report from the reporter's browser the moment it arrives. The problem depends on
+the tenant: where they are, and which booking form they run (`locales.ts`). A tenant's client on
+an `en-US` browser is still a day-first tenant. The table counts how many reports carry the wrong
+tag.
+
+## What the desk's own table shows
+
+The table on #4471, built by `CauseTable`, already splits `parser` from `hint`, but marks `hint`
+as "no ticket of its own" and hides `move` in a footnote:
+
+<CauseTable ticket={4471} />
+
+## What changes
+
+- Each problem has its own ticket, with its own count. Close each one on its own fix.
+- When #4471 closes, watch for new date reports from booking-v3 forms and one-day moves: they
+  are not fixed by the parser.
+- Merging on subject alone ([decision 0001](/kb/decisions/0001-dedupe-by-subject)) put three
+  problems into one ticket. Before you merge a report into a big ticket, check its cause with
+  [the dedupe explorer](/kb/triage/dedupe), and read the body when it does not say day and month
+  swapped. Changing the rule needs a new decision record; 0001 stays as it is.
+
+<RenderStamp {signature} />
